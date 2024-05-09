@@ -26,8 +26,8 @@ use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 Route::middleware([
     'web',
     InitializeTenancyByDomain::class,
-    PreventAccessFromCentralDomains::class,
-    RedirectIfAuthenticatedToRoot::class
+    'universal',
+
 ])->group(function () {
 
     Route::get('/login', [AuthTenantController::class, 'showLoginForm'])->name('tenant.login');
@@ -39,9 +39,14 @@ Route::middleware([
 
 Route::middleware([
     'web',
+    'auth', // Middleware 'auth' para proteger la ruta específica
     InitializeTenancyByDomain::class,
     PreventAccessFromCentralDomains::class,
-    'auth', // Middleware 'auth' para proteger la ruta específica
+
 ])->group(function () {
     Route::get('/', [ProductoController::class, 'create'])->name('tenant.list');
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
 });
+
